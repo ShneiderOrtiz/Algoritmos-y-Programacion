@@ -1,0 +1,207 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "a0210999",
+   "metadata": {},
+   "source": [
+    "# Taller Pandas: Operaciones con Pandas"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c9717b8e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "import math\n",
+    "\n",
+    "muns = pd.read_csv(\"https://raw.githubusercontent.com/BrayanTorres2/Algoritmos-y-programacion/refs/heads/main/Data/municipios.csv\", index_col=0)\n",
+    "muns.info()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9589d8aa",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "muns.head(5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e1d715ff",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "muns.describe()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e14edbef",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "num_municipios = len(muns)\n",
+    "assert num_municipios == 1122\n",
+    "print(\"Cantidad de municipios =\", num_municipios)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e8454a2f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "prom = muns.poblaciónRural.mean()\n",
+    "assert math.isclose(10198.901961, prom, rel_tol=1e-6)\n",
+    "print(\"Prueba superada 💪🏽\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "926084b4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "n = muns.departamento.value_counts().loc[\"Amazonas\"]\n",
+    "print(f\"Hay {n} municipios en Amazonas\")\n",
+    "assert n == 11\n",
+    "print(\"Prueba superada 💪🏽\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "00538848",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def municipios_departamento(muns: pd.DataFrame, nombre: str) -> int:\n",
+    "    n = muns[muns['departamento'] == nombre].shape[0]\n",
+    "    return n\n",
+    "\n",
+    "assert municipios_departamento(muns, \"Cundinamarca\") == 117\n",
+    "assert municipios_departamento(muns, \"Boyacá\") == 123\n",
+    "assert municipios_departamento(muns, \"Vichada\") == 4\n",
+    "print(\"Prueba superada 💪🏽\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "eb95b1ef",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "m = muns[muns['poblaciónRural'] < 500]['nombre']\n",
+    "assert m.sort_values().to_list() == ['La Guadalupe', 'Santa Lucía', 'Soplaviento', 'Suan']\n",
+    "print(\"Prueba superada 💪🏽\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "bb8c159f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pob_urb = muns['poblaciónUrbana'].sum()\n",
+    "assert pob_urb == 37_740_751\n",
+    "print(\"Prueba superada 💪🏽\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "06ac2694",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pob_eje_cafetero = muns[muns['departamento'].isin(['Caldas', 'Quindio', 'Risaralda'])]['poblaciónUrbana'].sum()\n",
+    "assert pob_eje_cafetero == 1_471_055\n",
+    "print(\"Prueba superada 💪🏽\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9e0a6a9a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "nombre_capital_casanare = muns[(muns['departamento'] == 'Casanare') & (muns['esCapital'] == 1)]['nombre'].iloc[0]\n",
+    "print(nombre_capital_casanare)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1f2a1ef4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "prom_poblacion_urbana = muns['poblaciónUrbana'].mean()\n",
+    "cant_muns_pobl_inf_prom = muns[muns['poblaciónUrbana'] < prom_poblacion_urbana].shape[0]\n",
+    "assert cant_muns_pobl_inf_prom == 998\n",
+    "print(\"Prueba superada 💪🏽\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "39c37806",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "muns_1_a_3_millones = muns[(muns['poblaciónUrbana'] >= 1_000_000) & (muns['poblaciónUrbana'] <= 3_000_000)][['nombre', 'poblaciónUrbana']]\n",
+    "print(muns_1_a_3_millones)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7fe6017c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "rural_mayor_que_urbana = muns[muns['poblaciónRural'] > muns['poblaciónUrbana']]\n",
+    "print(rural_mayor_que_urbana)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "751416ca",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "num_capitales = muns[muns['esCapital'] == 1].shape[0]\n",
+    "print(num_capitales)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "15e78534",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "a = muns[(muns.esCapital==1) & (muns.poblaciónUrbana < 100_000)]\n",
+    "print(len(a))"
+   ]
+  }
+ ],
+ "metadata": {},
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
